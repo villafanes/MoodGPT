@@ -77,12 +77,13 @@ def newWindow():
     new_window = Toplevel(root)
     new_window.title("Mood Board")
 
-    img = Image.open("Ligma.png")  # Replace with your image path
-    img = ImageTk.PhotoImage(img)
+    tester = Image.open("Ligma.png")
+    resized_tester = tester.resize((750, 750))
+    test_img = ImageTk.PhotoImage(resized_tester)
 
-    label = Label(new_window, image=img)
-    label.image = img
-    label.place()
+    test_label = Label(new_window, image=test_img)
+    test_label.image = test_img
+    test_label.grid(row=0, column=0)
 
     root.withdraw()
 
