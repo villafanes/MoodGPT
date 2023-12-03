@@ -1,0 +1,2 @@
+# MoodGPT
+api key = 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
