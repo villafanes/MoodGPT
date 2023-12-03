@@ -5,7 +5,6 @@
 # after running both you should be able to import spacey
 # same thing for openAI uncomment next line 
 # import open ai
-#in api key = paste this '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'
 from openai import OpenAI
 import spacy
 import random
