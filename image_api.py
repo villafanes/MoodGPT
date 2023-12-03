@@ -11,7 +11,7 @@ import random
 
 
 client = OpenAI(
-    api_key='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',
+    api_key='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',
 )
 
 
