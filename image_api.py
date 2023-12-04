@@ -1,18 +1,7 @@
-# uncomment line below to download package, dont run but hover over it alt+enter
-# import spacy.cli
-# spacy.cli.download("en_core_web_lg") run both
-# spacy.cli.download("en_core_web_sm") 
-# after running both you should be able to import spacey
-# same thing for openAI uncomment next line 
-# import open ai
-from openai import OpenAI
+import requests
+import spacy.cli
 import spacy
 import random
-
-
-client = OpenAI(
-    api_key='',
-)
 
 
 def create_sentence(list_of_adjectives):
@@ -52,22 +41,22 @@ def generate_title(lyrics_arrays):
 
 
 def print_image(input_words):
-    response = client.images.generate(
-        model="dall-e-2",
-        prompt=input_words,
-        size="512x512",
-        quality="standard",
-        n=1,
+    r = requests.post(
+        "https://api.deepai.org/api/text2img",
+        data={
+            'text': input_words,
+        },
+        headers={'api-key': '3ac6a775-0374-4070-8683-d3e5fbbc8850'}
     )
-    print(response)
+    data = r.json()
+    print(data)
 
 
 def execute(song_lyrics_arrays):
     adjectives = generate_title(song_lyrics_arrays)
     sentences = create_sentence(adjectives) + " 3x3 square grid moodboard"
     print_image(sentences)
-
-
+    
 """
 Example on how to run, parse the lines into execute command to generate image
 
