@@ -13,9 +13,6 @@ song_lyrics_passed = functiontogetgeniuslyrics()
 this has to be declared outside the scope just like the other global variables
 execute can stay the same, just again that global variable of song_lyrics_passed has to be from the genius function
 '''
-song_lyrics_passed = []
-
-
 def create_sentence(list_of_adjectives):
     # Add other words to form a complete sentence
     # sentence = "The" You can modify this part based on your specific sentence structure
@@ -33,20 +30,16 @@ def generate_title(lyrics_arrays):
 
     # Process each lyric array with spaCy and extract entities and adjectives
     for lyric_array in lyrics_arrays:
-        # Extract the string from the array
-        lyric_text = lyric_array[0]
-
+        lyric_lowercase = lyric_array.lower()
         # Process the lyrics with spaCy
-        doc = nlp(lyric_text)
+        doc = nlp(lyric_lowercase)
 
         # Extract entities and adjectives
-        entities = [ent.text for ent in doc.ents if ent.label_ in ["PERSON", "ORG", "GPE"]]
         adjectiveslist = [token.text for token in doc if token.pos_ == "ADJ"]
         nouns = [token.text for token in doc if token.pos_ == "NOUN"]
 
         # Example: Combine the first entity and an adjective
         titles.extend(adjectiveslist)
-        titles.extend(entities)
         titles.extend(nouns)
 
     return titles
@@ -64,6 +57,12 @@ def print_image(input_words):
     print(data)
 
 
+def execute(song_lyrics_arrays):
+    adjectives = generate_title(song_lyrics_arrays)
+    sentences = create_sentence(adjectives) + " 3x3 square grid moodboard"
+    print_image(sentences)
+
+
 def top_5_words_and_counts(words):
     # Step 1: Count word occurrences
     word_counts = Counter(words)
@@ -76,16 +75,6 @@ def top_5_words_and_counts(words):
     top_5_counts = [count for word, count in sorted_words[:5]]
 
     return top_5_words, top_5_counts
-
-#global variables
-extracted_words = generate_title(song_lyrics_passed)
-top5words, top5count = top_5_words_and_counts(extracted_words)
-
-
-def execute(song_lyrics_passed):
-    adjectives = generate_title(song_lyrics_passed)
-    sentences = create_sentence(adjectives) + " 3x3 square grid moodboard"
-    print_image(sentences)
     
 """
 Example on how to run, parse the lines into execute command to generate image
