@@ -3,7 +3,7 @@ import spacy.cli
 spacy.cli.download("en_core_web_lg")
 spacy.cli.download("en_core_web_sm")
 import spacy
-import random
+from collections import Counter
 
 
 def create_sentence(list_of_adjectives):
@@ -58,6 +58,13 @@ def execute(song_lyrics_arrays):
     adjectives = generate_title(song_lyrics_arrays)
     sentences = create_sentence(adjectives) + " 3x3 square grid moodboard"
     print_image(sentences)
+
+
+def extract_multiple(duplicate_words):
+    word_counts = Counter(duplicate_words)
+    sorted_words = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
+    top_5_words = [word for word, count in sorted_words[:5]]
+    return top_5_words
     
 """
 Example on how to run, parse the lines into execute command to generate image
