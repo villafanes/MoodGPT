@@ -5,6 +5,14 @@ spacy.cli.download("en_core_web_sm")
 import spacy
 from collections import Counter
 
+'''
+song lyrics have to be taken from genius and set equal as song_lyrics_passed
+ex. 
+song_lyrics_passed = functiontogetgeniuslyrics()
+
+this has to be declared outside the scope just like the other global variables
+execute can stay the same, just again that global variable of song_lyrics_passed has to be from the genius function
+'''
 
 def create_sentence(list_of_adjectives):
     # Add other words to form a complete sentence
@@ -54,17 +62,28 @@ def print_image(input_words):
     print(data)
 
 
-def execute(song_lyrics_arrays):
-    adjectives = generate_title(song_lyrics_arrays)
+def top_5_words_and_counts(words):
+    # Step 1: Count word occurrences
+    word_counts = Counter(words)
+
+    # Step 2: Sort by occurrence in descending order
+    sorted_words = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
+
+    # Step 3: Extract top 5 words and counts
+    top_5_words = [word for word, count in sorted_words[:5]]
+    top_5_counts = [count for word, count in sorted_words[:5]]
+
+    return top_5_words, top_5_counts
+
+#global variables
+extracted_words = generate_title(song_lyrics_passed)
+top5words, top5count = top_5_words_and_counts(extracted_words)
+
+
+def execute(song_lyrics_passed):
+    adjectives = generate_title(song_lyrics_passed)
     sentences = create_sentence(adjectives) + " 3x3 square grid moodboard"
     print_image(sentences)
-
-
-def extract_multiple(duplicate_words):
-    word_counts = Counter(duplicate_words)
-    sorted_words = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
-    top_5_words = [word for word, count in sorted_words[:5]]
-    return top_5_words
     
 """
 Example on how to run, parse the lines into execute command to generate image
