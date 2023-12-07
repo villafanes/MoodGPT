@@ -13,6 +13,8 @@ song_lyrics_passed = functiontogetgeniuslyrics()
 this has to be declared outside the scope just like the other global variables
 execute can stay the same, just again that global variable of song_lyrics_passed has to be from the genius function
 '''
+song_lyrics_passed = []
+
 
 def create_sentence(list_of_adjectives):
     # Add other words to form a complete sentence
