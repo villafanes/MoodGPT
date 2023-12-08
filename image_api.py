@@ -1,5 +1,6 @@
 import requests
 import spacy.cli
+
 spacy.cli.download("en_core_web_lg")
 spacy.cli.download("en_core_web_sm")
 import spacy
@@ -13,6 +14,8 @@ song_lyrics_passed = functiontogetgeniuslyrics()
 this has to be declared outside the scope just like the other global variables
 execute can stay the same, just again that global variable of song_lyrics_passed has to be from the genius function
 '''
+
+
 def create_sentence(list_of_adjectives):
     # Add other words to form a complete sentence
     # sentence = "The" You can modify this part based on your specific sentence structure
@@ -28,9 +31,11 @@ def generate_title(lyrics_arrays):
 
     titles = []
 
+    lines = lyrics_arrays.split('\n')
+
     # Process each lyric array with spaCy and extract entities and adjectives
-    for lyric_array in lyrics_arrays:
-        lyric_lowercase = lyric_array.lower()
+    for line in lines:
+        lyric_lowercase = line.lower()
         # Process the lyrics with spaCy
         doc = nlp(lyric_lowercase)
 
@@ -54,13 +59,12 @@ def print_image(input_words):
         headers={'api-key': '3ac6a775-0374-4070-8683-d3e5fbbc8850'}
     )
     data = r.json()
-    print(data)
-
+    return data['output_url']
 
 def execute(song_lyrics_arrays):
     adjectives = generate_title(song_lyrics_arrays)
     sentences = create_sentence(adjectives) + " 3x3 square grid moodboard"
-    print_image(sentences)
+    return print_image(sentences)
 
 
 def top_5_words_and_counts(words):
@@ -75,7 +79,8 @@ def top_5_words_and_counts(words):
     top_5_counts = [count for word, count in sorted_words[:5]]
 
     return top_5_words, top_5_counts
-    
+
+
 """
 Example on how to run, parse the lines into execute command to generate image
 
@@ -88,4 +93,3 @@ song_lyrics_arrays2 = [
 
 execute(song_lyrics_arrays2)
 """
-
