@@ -40,11 +40,11 @@ def generate_title(lyrics_arrays):
         doc = nlp(lyric_lowercase)
 
         # Extract entities and adjectives
-        adjectiveslist = [token.text for token in doc if token.pos_ == "ADJ"]
+        adjectives_list = [token.text for token in doc if token.pos_ == "ADJ"]
         nouns = [token.text for token in doc if token.pos_ == "NOUN"]
 
         # Example: Combine the first entity and an adjective
-        titles.extend(adjectiveslist)
+        titles.extend(adjectives_list)
         titles.extend(nouns)
 
     return titles
