@@ -22,7 +22,7 @@ def get_lyrics(artist, title):
                     if j == '[':
                         lyrics.remove(i)
 
-            return song.lyrics
+            return lyrics
         else:
             return None
     except requests.exceptions.Timeout:
