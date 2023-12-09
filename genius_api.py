@@ -25,7 +25,7 @@ def get_lyrics(artist, title):
             artist_used = song.artist
             song_used = song.title
 
-            return lyrics, artist_used, song_used
+            return lyrics=
         else:
             print("Song cannot be found.")
             return None
