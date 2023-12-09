@@ -14,15 +14,21 @@ def get_lyrics(artist, title):
         if song:
             # array of every line of lyrics
             lyrics = song.lyrics
-            # remove empty elements
             lyrics = lyrics.split('\n')
 
+            # remove empty elements
             for i in lyrics:
                 if i == '':
                     lyrics.remove(i)
 
+            #remove non-lyrics
+            lyrics.remove(lyrics[0])
+            lyrics.remove(lyrics[-1])
+
+            # record artist and song without typos
             artist_used = song.artist
             song_used = song.title
+            
             return lyrics, artist_used, song_used
         else:
             return None, None, None
