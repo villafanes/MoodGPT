@@ -21,9 +21,6 @@ MoodGPT is a Python-based application that generates mood boards based on song l
 1. Ensure Python 3.x is installed on your system.
 2. Install required Python packages (pip install Pillow lyricsgenius requests spacy)
 
-## Configuration
-To use the Genius API, you need to obtain an API key from Genius. Replace the api_key in genius_api.py with your own key.
-
 ## Usage
 1. Run the `moodgpt_gui.py` script to start the application (python moodgpt_gui.py)
 2. Enter the song title and artist name in the provided fields after deleting the text already in the entry widgets.
