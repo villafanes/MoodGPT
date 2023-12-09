@@ -31,6 +31,7 @@ def get_lyrics(artist, title):
             
             return lyrics, artist_used, song_used
         else:
+            print("Song cannot be found.")
             return None, None, None
 
     except requests.exceptions.Timeout:
