@@ -6,12 +6,12 @@ import genius_api
 import image_api
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
 
 # Home Page Main Screen
 root = Tk()
 root.title("Welcome to MoodGPT")
 
+# Home Page Background Image Grid
 pop_image = Image.open("pop_music.png")
 resized_pop = pop_image.resize((250, 250))
 pop_music = ImageTk.PhotoImage(resized_pop)
@@ -78,7 +78,7 @@ artist_entry = Entry(root, width=25, bg="#6F8FAF", font="Georgia")
 artist_entry.insert(0, "Artist Name: ")
 artist_entry.place(x=275, y=370)
 
-# Exit button, top right of the screen
+# Exit button, top right of the screen to avoid quit program smoothly
 quit = Button(root, text="Exit", font=("Georgia", 16, "bold"), command=root.quit, fg="#FF0000")  # doesn't show on mac
 quit.grid(row=0, column=500, sticky="ne")
 
@@ -87,29 +87,31 @@ def newWindow():
     song_title = song_entry.get()
     artist_name = artist_entry.get()
 
-    # if user didn't delete the text in the entry widgets
+    # Prompts error window in case user did not delete default text in entry widgets 
     if "Song Title: " in song_title or "Artist Name: " in artist_name:
         messagebox.showerror("Error", "Must delete text inside text box[es] before entering song title and artist name.")
     else:
-        # put song name and title into genius api
+        # Enters artist name and title entered by the user
+        # Stores the closest match of artist name and title found by Genius 
         lyrics, artist_used, song_used = genius_api.get_lyrics(artist_name, song_title)
+        
+        # If the song isn't found in the Genius API
         if lyrics is None:
             messagebox.showerror("Error", "Song cannot be found. Please check your spelling and try again.")
 
+        # Passes lyrics into AI image generator
         image_url = image_api.execute(lyrics)
+        
+        # If the lyrics contain any words or phrases not allowed by the AI image generator
         if image_url is None:
             messagebox.showerror("Error", "The system detected potentially unsafe content. Please try running the program again or adjust the prompt.")
             return
 
-        print(lyrics)
+        # Collect repeated words and store arrays of the top 5 words and their frequencies
         duplicate_words = image_api.generate_title(lyrics)
-        print('Duplicate words: ', duplicate_words)
         words, frequencies = image_api.top_5_words_and_counts(duplicate_words)
-        print('Words:', words)
-        print('Frequencies:', frequencies)
-
-        # create a new file to hold the mood board image
-        """Check if the file type is jpg or png"""
+        
+        # Creates a file to hold the mood board image
         f = open('moodboard.png', 'wb')
 
         # stores the image data inside the data variable to the file
@@ -117,50 +119,54 @@ def newWindow():
         f.write(file)
         f.close()
 
+        # Creates new window for mood board and pie chart presentation
         new_window = Toplevel(root)
         new_window.title("Mood Board")
 
         def display_data(moodboard_path, top_words, top_word_counts):
+            # Displays generated mood board image on the new window
             moodboard = Image.open(moodboard_path)
             moodboard = moodboard.resize((500, 500))
             moodboard_img = ImageTk.PhotoImage(moodboard)
-
             img_label = Label(new_window, image=moodboard_img)
             img_label.image = moodboard_img
             img_label.grid(row=0, column=0)
 
-            # Create a Matplotlib figure and a subplot for the pie chart
-            # Adjust the figure size to match the image size
+            # Creates a Matplotlib figure and a subplot for the pie chart
             plot = Figure(figsize=(6, 5), facecolor='honeydew')
             chart = plot.add_subplot(111)
 
-            # Plot the pie chart on the subplot without labels
+            # Plots the pie chart on the subplot without labels
             colors = ['darkgreen', 'forestgreen', 'seagreen', 'mediumseagreen', 'lightgreen']
             chart.pie(frequencies, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
             chart.set_title(f'{song_used} by {artist_used}', fontname='Georgia', fontsize=18)
-            chart.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+            chart.axis('equal')  
 
-            # Create a legend
+            # Creates a legend
             chart.legend(words, loc='upper left', bbox_to_anchor=(0.85, 1))
 
-            # Embed the figure in the Tkinter window
+            # Embeds the pie chart in the Tkinter window
             canvas = FigureCanvasTkAgg(plot, master=new_window)
             canvas.draw()
             canvas.get_tk_widget().grid(row=0, column=1)
 
+        # Hides the home screen window
         root.withdraw()
         display_data('moodboard.png', words, frequencies)
 
         def reopen_root():
+            # Hides mood board window and reopens home window so the user can enter a new song
             new_window.withdraw()
             root.deiconify()
             new_window.withdraw()
 
+        # Triggers the home window to open when clicked
         restart = Button(new_window, text="Start Again", font=("Georgia", 12, "bold"), command=reopen_root)
-        restart.place(x=750, y=450)  # temporary location
+        restart.place(x=750, y=450)  
 
 
-button = Button(root, text="Enter", font=("Georgia", 12, "bold"), command=newWindow)
-button.place(x=345, y=415)
+# Triggers the mood board window to open when clicked
+enter = Button(root, text="Enter", font=("Georgia", 12, "bold"), command=newWindow)
+enter.place(x=345, y=415)
 
 root.mainloop()
