@@ -31,20 +31,18 @@ def generate_title(lyrics_arrays):
 
     titles = []
 
-    lines = lyrics_arrays.split('\n')
-
     # Process each lyric array with spaCy and extract entities and adjectives
-    for line in lines:
-        lyric_lowercase = line.lower()
+    for array in lyrics_arrays:
+        lyric_lowercase = array.lower()
         # Process the lyrics with spaCy
         doc = nlp(lyric_lowercase)
 
         # Extract entities and adjectives
-        adjectives_list = [token.text for token in doc if token.pos_ == "ADJ"]
+        adjectiveslist = [token.text for token in doc if token.pos_ == "ADJ"]
         nouns = [token.text for token in doc if token.pos_ == "NOUN"]
 
         # Example: Combine the first entity and an adjective
-        titles.extend(adjectives_list)
+        titles.extend(adjectiveslist)
         titles.extend(nouns)
 
     return titles
@@ -59,7 +57,13 @@ def print_image(input_words):
         headers={'api-key': '3ac6a775-0374-4070-8683-d3e5fbbc8850'}
     )
     data = r.json()
-    return data['output_url']
+    print("API Output: ", data)
+
+    if 'output_url' in data:
+        return data['output_url']
+    else:
+        print('Song entered contains explicit content. Try entering a new song.')
+        return None
 
 def execute(song_lyrics_arrays):
     adjectives = generate_title(song_lyrics_arrays)
