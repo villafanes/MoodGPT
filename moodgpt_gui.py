@@ -83,7 +83,7 @@ quit = Button(root, text="Exit", font=("Georgia", 16, "bold"), command=root.quit
 quit.grid(row=0, column=500, sticky="ne")
 
 
-def newWindow():
+def open_window():
     song_title = song_entry.get()
     artist_name = artist_entry.get()
 
@@ -166,7 +166,7 @@ def newWindow():
 
 
 # Triggers the mood board window to open when clicked
-enter = Button(root, text="Enter", font=("Georgia", 12, "bold"), command=newWindow)
+enter = Button(root, text="Enter", font=("Georgia", 12, "bold"), command=open_window)
 enter.place(x=345, y=415)
 
 root.mainloop()
