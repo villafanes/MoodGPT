@@ -89,7 +89,7 @@ def newWindow():
     artist_name = artist_entry.get()
 
     # Prompts error window in case user did not delete default text in entry widgets
-    if song_title == "Song Title: " or artist_name == "Artist Name: ":
+    if "Song Title: " in song_title or "Artist Name: " in artist_name:
         messagebox.showerror("Error", "Must delete text inside text box[es] before entering song title and artist name.")
     else:
         # Enters artist name and title entered by the user
