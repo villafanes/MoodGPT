@@ -88,30 +88,30 @@ def newWindow():
     song_title = song_entry.get()
     artist_name = artist_entry.get()
 
-    # Prompts error window in case user did not delete default text in entry widgets 
-    if "Song Title: " in song_title or "Artist Name: " in artist_name:
+    # Prompts error window in case user did not delete default text in entry widgets
+    if song_title == "Song Title: " or artist_name == "Artist Name: ":
         messagebox.showerror("Error", "Must delete text inside text box[es] before entering song title and artist name.")
     else:
         # Enters artist name and title entered by the user
-        # Stores the closest match of artist name and title found by Genius 
+        # Stores the closest match of artist name and title found by Genius
         lyrics, artist_used, song_used = genius_api.get_lyrics(artist_name, song_title)
-        
+
         # If the song isn't found in the Genius API
         if lyrics is None:
             messagebox.showerror("Error", "Song cannot be found. Please check your spelling and try again.")
 
         # Passes lyrics into AI image generator
         image_url = image_api.execute(lyrics)
-        
+
         # If the lyrics contain any words or phrases not allowed by the AI image generator
-        if image_url is None:
-            messagebox.showerror("Error", "The system detected potentially unsafe content. Please try running the program again or adjust the prompt.")
+        if image_url is None or "Error":
+            messagebox.showerror("Error", "Invalid prompts detected. Song contents could potentially be unsafe or explicit. Try another song.")
             return
 
         # Collect repeated words and store arrays of the top 5 words and their frequencies
         duplicate_words = image_api.generate_title(lyrics)
         words, frequencies = image_api.top_5_words_and_counts(duplicate_words)
-        
+
         # Creates a file to hold the mood board image
         f = open('moodboard.png', 'wb')
 
@@ -146,7 +146,7 @@ def newWindow():
             colors = ['darkgreen', 'forestgreen', 'seagreen', 'mediumseagreen', 'lightgreen']
             chart.pie(frequencies, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
             chart.set_title(f'{song_used} by {artist_used}', fontname='Georgia', fontsize=18)
-            chart.axis('equal')  
+            chart.axis('equal')
 
             # Creates a legend
             chart.legend(words, loc='upper left', bbox_to_anchor=(0.85, 1))
@@ -172,10 +172,11 @@ def newWindow():
 
         # Triggers the home window to open when clicked
         restart = Button(new_window, text="Start Again", font=("Georgia", 12, "bold"), command=reopen_root)
-        restart.place(x=750, y=450)  
+        restart.place(x=750, y=450)
+
+    # Triggers the mood board window to open when clicked
 
 
-# Triggers the mood board window to open when clicked
 enter = Button(root, text="Enter", font=("Georgia", 12, "bold"), command=newWindow)
 enter.place(x=345, y=415)
 
