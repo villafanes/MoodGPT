@@ -4,6 +4,7 @@ from collections import Counter
 import base64
 import requests
 import os
+
 spacy.cli.download("en_core_web_lg")
 spacy.cli.download("en_core_web_sm")
 
@@ -60,7 +61,8 @@ def print_image(input_words):
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "Authorization": "Bearer sk-q01UhLqfaR59h8RqixIWJXIZtMiC36njCDsL9V4iWHu3vIlG",  # Replace with your Stability.ai API key
+        "Authorization": "Bearer sk-q01UhLqfaR59h8RqixIWJXIZtMiC36njCDsL9V4iWHu3vIlG",
+        # Replace with your Stability.ai API key
     }
 
     response = requests.post(
@@ -68,7 +70,6 @@ def print_image(input_words):
         headers=headers,
         json=body,
     )
-
     data = response.json()
 
     # Make sure the out directory exists
@@ -107,4 +108,3 @@ def top_5_words_and_counts(words):
     top_5_counts = [count for word, count in sorted_words[:5]]
 
     return top_5_words, top_5_counts
-
