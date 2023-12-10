@@ -84,7 +84,7 @@ quit = Button(root, text="Exit", font=("Georgia", 16, "bold"), command=root.quit
 quit.grid(row=0, column=500, sticky="ne")
 
 
-def newWindow():
+def open_window():
     song_title = song_entry.get()
     artist_name = artist_entry.get()
 
@@ -102,9 +102,12 @@ def newWindow():
 
         # Passes lyrics into AI image generator
         image_url = image_api.execute(lyrics)
+        if image_url is None:
+            messagebox.showerror("Error", "Failed to generate the image. Please try again.")
+            return
 
         # If the lyrics contain any words or phrases not allowed by the AI image generator
-        if image_url is None or "Error":
+        if image_url == "Error" or image_url is None:
             messagebox.showerror("Error", "Invalid prompts detected. Song contents could potentially be unsafe or explicit. Try another song.")
             return
 
@@ -119,9 +122,13 @@ def newWindow():
         file_path = image_url  # Assuming image_path is the path returned by stability_ai_execute
 
         # Read the content of the image file and write it to the moodboard.png file
-        with open(file_path, 'rb') as image_file:
-            file_content = image_file.read()
-            f.write(file_content)
+        try:
+            with open(file_path, 'rb') as image_file:
+                file_content = image_file.read()
+                f.write(file_content)
+        except Exception as e:
+            messagebox.showerror("Error", "Invalid prompts detected. Song contents could potentially be unsafe or explicit. Try another song.")
+            return
 
         f.close()
 
@@ -177,7 +184,7 @@ def newWindow():
     # Triggers the mood board window to open when clicked
 
 
-enter = Button(root, text="Enter", font=("Georgia", 12, "bold"), command=newWindow)
+enter = Button(root, text="Enter", font=("Georgia", 12, "bold"), command=open_window)
 enter.place(x=345, y=415)
 
 root.mainloop()
