@@ -4,6 +4,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import genius_api
 import image_api
+import os
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -83,7 +84,7 @@ quit = Button(root, text="Exit", font=("Georgia", 16, "bold"), command=root.quit
 quit.grid(row=0, column=500, sticky="ne")
 
 
-def open_window():
+def newWindow():
     song_title = song_entry.get()
     artist_name = artist_entry.get()
 
@@ -114,9 +115,14 @@ def open_window():
         # Creates a file to hold the mood board image
         f = open('moodboard.png', 'wb')
 
-        # stores the image data inside the data variable to the file
-        file = requests.get(image_url).content
-        f.write(file)
+        # Use the Stability.ai generated image path directly
+        file_path = image_url  # Assuming image_path is the path returned by stability_ai_execute
+
+        # Read the content of the image file and write it to the moodboard.png file
+        with open(file_path, 'rb') as image_file:
+            file_content = image_file.read()
+            f.write(file_content)
+
         f.close()
 
         # Creates new window for mood board and pie chart presentation
@@ -160,13 +166,17 @@ def open_window():
             root.deiconify()
             new_window.withdraw()
 
+            image_path = './out/generated_image.png'  # Update with your actual path
+            if os.path.exists(image_path):
+                os.remove(image_path)
+
         # Triggers the home window to open when clicked
         restart = Button(new_window, text="Start Again", font=("Georgia", 12, "bold"), command=reopen_root)
         restart.place(x=750, y=450)  
 
 
 # Triggers the mood board window to open when clicked
-enter = Button(root, text="Enter", font=("Georgia", 12, "bold"), command=open_window)
+enter = Button(root, text="Enter", font=("Georgia", 12, "bold"), command=newWindow)
 enter.place(x=345, y=415)
 
 root.mainloop()
