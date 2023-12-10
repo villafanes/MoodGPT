@@ -22,7 +22,7 @@ def generate_title(lyrics_arrays):
     titles = []
 
     # Process each lyric array with spaCy and extract entities and adjectives
-    #chatgpt help
+    # chatgpt help
     for array in lyrics_arrays:
         lyric_lowercase = array.lower()
         # Process the lyrics with spaCy
@@ -69,18 +69,15 @@ def print_image(input_words):
         json=body,
     )
 
-    if response.status_code != 200:
-        raise Exception("Non-200 response: " + str(response.text))
-
     data = response.json()
 
     # Make sure the out directory exists
-    #chatgpt help
+    # chatgpt help
     if not os.path.exists("./out"):
         os.makedirs("./out")
 
     # Save the image locally
-    #chatgpt help
+    # chatgpt help
     image_path = f'./out/generated_image.png'
     with open(image_path, "wb") as f:
         f.write(base64.b64decode(data["artifacts"][0]["base64"]))
@@ -91,11 +88,14 @@ def print_image(input_words):
 def execute(song_lyrics_arrays):
     adjectives = generate_title(song_lyrics_arrays)
     sentences = create_sentence(adjectives)
-    return print_image(sentences)
+    try:
+        return print_image(sentences)
+    except Exception as e:
+        return None
 
 
 def top_5_words_and_counts(words):
-    #chatgpt help
+    # chatgpt help
     # Step 1: Count word occurrences
     word_counts = Counter(words)
 
