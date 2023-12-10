@@ -9,7 +9,7 @@ spacy.cli.download("en_core_web_sm")
 
 
 def create_sentence(list_of_adjectives):
-=    sentence = "3 squares by 3 squares grid moodboard of: "
+    sentence = "3 squares by 3 squares grid moodboard of: "
     if list_of_adjectives:
         sentence += " " + ' '.join(list_of_adjectives)
 
