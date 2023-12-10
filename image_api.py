@@ -1,25 +1,15 @@
-import requests
 import spacy.cli
-
-spacy.cli.download("en_core_web_lg")
-spacy.cli.download("en_core_web_sm")
 import spacy
 from collections import Counter
-
-'''
-song lyrics have to be taken from genius and set equal as song_lyrics_passed
-ex. 
-song_lyrics_passed = functiontogetgeniuslyrics()
-
-this has to be declared outside the scope just like the other global variables
-execute can stay the same, just again that global variable of song_lyrics_passed has to be from the genius function
-'''
+import base64
+import requests
+import os
+spacy.cli.download("en_core_web_lg")
+spacy.cli.download("en_core_web_sm")
 
 
 def create_sentence(list_of_adjectives):
-    # Add other words to form a complete sentence
-    # sentence = "The" You can modify this part based on your specific sentence structure
-    sentence = ""
+=    sentence = "3 squares by 3 squares grid moodboard of: "
     if list_of_adjectives:
         sentence += " " + ' '.join(list_of_adjectives)
 
@@ -32,6 +22,7 @@ def generate_title(lyrics_arrays):
     titles = []
 
     # Process each lyric array with spaCy and extract entities and adjectives
+    #chatgpt help
     for array in lyrics_arrays:
         lyric_lowercase = array.lower()
         # Process the lyrics with spaCy
@@ -49,29 +40,62 @@ def generate_title(lyrics_arrays):
 
 
 def print_image(input_words):
-    r = requests.post(
-        "https://api.deepai.org/api/text2img",
-        data={
-            'text': input_words,
-        },
-        headers={'api-key': '3ac6a775-0374-4070-8683-d3e5fbbc8850'}
-    )
-    data = r.json()
-    print("API Output: ", data)
+    url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
 
-    if 'output_url' in data:
-        return data['output_url']
-    else:
-        print('Song entered contains explicit content. Try entering a new song.')
-        return None
+    body = {
+        "steps": 30,
+        "width": 1024,
+        "height": 1024,
+        "seed": 0,
+        "cfg_scale": 5,
+        "samples": 1,
+        "text_prompts": [
+            {
+                "text": input_words,
+                "weight": 1
+            }
+        ],
+    }
+
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer sk-q01UhLqfaR59h8RqixIWJXIZtMiC36njCDsL9V4iWHu3vIlG",  # Replace with your Stability.ai API key
+    }
+
+    response = requests.post(
+        url,
+        headers=headers,
+        json=body,
+    )
+
+    if response.status_code != 200:
+        raise Exception("Non-200 response: " + str(response.text))
+
+    data = response.json()
+
+    # Make sure the out directory exists
+    #chatgpt help
+    if not os.path.exists("./out"):
+        os.makedirs("./out")
+
+    # Save the image locally
+    #chatgpt help
+    image_path = f'./out/generated_image.png'
+    with open(image_path, "wb") as f:
+        f.write(base64.b64decode(data["artifacts"][0]["base64"]))
+
+    return image_path
+
 
 def execute(song_lyrics_arrays):
     adjectives = generate_title(song_lyrics_arrays)
-    sentences = create_sentence(adjectives) + " 3x3 square grid moodboard"
+    sentences = create_sentence(adjectives)
     return print_image(sentences)
 
 
 def top_5_words_and_counts(words):
+    #chatgpt help
     # Step 1: Count word occurrences
     word_counts = Counter(words)
 
@@ -84,16 +108,3 @@ def top_5_words_and_counts(words):
 
     return top_5_words, top_5_counts
 
-
-"""
-Example on how to run, parse the lines into execute command to generate image
-
-song_lyrics_arrays2 = [
-    ["I hear the wind call my name"],
-    ["The stars are dancing in the night"],
-    ["A journey through lovely and space"],
-    ["In the embrace of endless light"]
-]
-
-execute(song_lyrics_arrays2)
-"""
